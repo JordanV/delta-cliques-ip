@@ -37,9 +37,19 @@ for line in sys.stdin:
     link = frozenset([u, v])
     time = (t, t)
 
+    if "34:00" in u:
+        top = set([u])
+        bot = set([v])
+    else:
+        top = set([v])
+        bot = set([u])
+    # print("***")
+    # print(top)
+    # print(bot)
+    # print("***")
     # This a new instance
     if not resurrect:
-        Cm.addClique(Clique((link, time), set([])))
+        Cm.addClique(Clique((top, bot, time), set([])))
 
     # Populate data structures
     if link not in times:
@@ -116,12 +126,12 @@ plt.show()
 while len(Cm._S) > 0:    
     r_clique = random.choice(Cm._S)
     c = Cm.getDeltaClique(r_clique, delta)
-    val = len(c._X) 
-    try:
-        counts[val] += 1
-    except KeyError:
-        counts[val] = 1
-    plt.scatter(val, counts[val])
-    plt.draw()
+    val = len(c._top) + len(c._bot) 
+    # try:
+        # counts[val] += 1
+    # except KeyError:
+        # counts[val] = 1
+    # plt.scatter(val, counts[val])
+    # plt.draw()
     # time.sleep(0.01)
     print(c)

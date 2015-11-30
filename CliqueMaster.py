@@ -40,13 +40,13 @@ class CliqueMaster:
             # Grow time on the right side
             td = c.getTd(self._times, delta)
             if c._te != td + delta:
-                c_add = Clique((c._X, (c._tb, td + delta)), c._candidates)
+                c_add = Clique((c._top, c._bot, (c._tb, td + delta)), c._candidates)
                 succ.add(c_add)
 
             # Grow time on the left side
             tp = c.getTp(self._times, delta)
             if c._tb != tp - delta:
-                c_add = Clique((c._X, (tp - delta, c._te)), c._candidates)
+                c_add = Clique((c._top, c._bot, (tp - delta, c._te)), c._candidates)
                 succ.add(c_add)
 
             # Grow node set
@@ -54,9 +54,16 @@ class CliqueMaster:
 
             for node in candidates:
                 if c.isClique(self._times, node, delta):
-                    Xnew = set(c._X).union([node])
+                    if "34:00" in node:
+                        newTop = set(c._top).union([node])
+                        newBot = set(c._bot)
+                    else:
+                        newTop = set(c._top)
+                        newBot = set(c._bot).union([node])
+                    # print(newTop)
+                    # Xnew = set(c._X).union([node])
                     c_add = Clique(
-                        (frozenset(Xnew), (c._tb, c._te)), c._candidates)
+                        (frozenset(newTop), frozenset(newBot),(c._tb, c._te)), c._candidates)
                     succ.add(c_add)
 
             # Choose one path uniformly at random

@@ -6,40 +6,47 @@ import bisect
 class Clique:
 
     def __init__(self, c, candidates=set([])):
-        (X, (tb, te)) = c
-        self._X = X
+        (top, bot, (tb, te)) = c
+        self._top = top
+        self._bot = bot
         self._tb = tb
         self._te = te
         self._candidates = candidates
 
     def __eq__(self, other):
-        if self._X == other._X and self._tb == other._tb and self._te == other._te:
+        if self._top == other._top and self._bot == other._bot and self._tb == other._tb and self._te == other._te:
             return True
         else:
             return False
 
     def __hash__(self):
-        return hash((self._X, self._tb, self._te))
+        return hash((str(self._top), str(self._bot), self._tb, self._te))
 
     def __str__(self):
-        return ','.join(map(str, list(self._X))) + " " + \
+        return ','.join(map(str, list(self._top))) + "," + ','.join(map(str, list(self._bot))) + " " + \
             str(self._tb) + "," + str(self._te)
 
     def getAdjacentNodes(self, times, nodes, delta):
         if self._te - self._tb <= delta:
-            for u in self._X:
+            for u in self._top.union(self._bot):
+                # print(str(self._top.union(self._bot)))
                 neighbors = nodes[u]
                 for n in neighbors:
                     if len([i for i in times[frozenset([u,n])] if(i >= self._tb and i <= self._te)]) > 0:
                         self._candidates.add(n)
 
-        self._candidates = self._candidates.difference(self._X)
+        self._candidates = self._candidates.difference(self._top.union(self._bot))
         return self._candidates
 
     def isClique(self, times, node, delta):
         """ returns True if X(c) union node is a clique over tb;te, False otherwise"""
 
-        for i in self._X:
+        if "34:00" in node:
+            clique_nodes = self._bot
+        else:
+            clique_nodes = self._top
+
+        for i in clique_nodes:
             if frozenset([i, node]) not in times.keys():
                 # sys.stderr.write("(%s, %s) does not exist\n" % (i, node))
                 return False
@@ -62,8 +69,8 @@ class Clique:
         # connu.
         td = 0
         max_t = []
-        for u in self._X:
-            for v in self._X:
+        for u in self._top:
+            for v in self._bot:
                 link = frozenset([u, v])
                 if link in times:
                     a = times[link][bisect.bisect_left(times[link], self._tb):bisect.bisect_right(times[link], self._te)]
@@ -82,8 +89,8 @@ class Clique:
         tp = 0
         min_t = []
 
-        for u in self._X:
-            for v in self._X:
+        for u in self._top:
+            for v in self._bot:
                 link = frozenset([u, v])
                 if link in times:
                     a = times[link][bisect.bisect_left(times[link], self._tb):bisect.bisect_right(times[link], self._te)]
