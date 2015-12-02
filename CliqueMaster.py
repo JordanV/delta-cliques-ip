@@ -70,6 +70,11 @@ class CliqueMaster:
             if(len(succ) > 0):
                 next_c = random.choice(list(succ))
                 succ = set([next_c])
+		
+		# Remove links of clique
+		for u in c._top:
+			for v in c._bot:
+				self._times[frozenset([u,v])] = []		
 
         return c
 

@@ -1,6 +1,5 @@
 from CliqueMaster import CliqueMaster
 from Clique import Clique
-import matplotlib.pyplot as plt
 import sys
 import random
 
@@ -30,7 +29,7 @@ else:
 # Read stream
 for line in sys.stdin:
     contents = line.split(" ")
-    t = int(contents[0])
+    t = float(contents[0])
     u = contents[1].strip()
     v = contents[2].strip()
 
@@ -119,9 +118,6 @@ if resurrect:
 # Cm.printCliques()
 
 # Get one clique (repeat until ctrl+c ? Parallelize ?)
-counts = {}
-plt.ion()
-plt.show()
 
 while len(Cm._S) > 0:    
     r_clique = random.choice(Cm._S)
@@ -134,4 +130,4 @@ while len(Cm._S) > 0:
     # plt.scatter(val, counts[val])
     # plt.draw()
     # time.sleep(0.01)
-    print(c)
+    print(str(len(c._top)) + "/" + str(len(c._bot)) + " " + str(c))
